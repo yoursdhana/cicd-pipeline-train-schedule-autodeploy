@@ -4,7 +4,7 @@ pipeline {
     }    
     agent any
     environment {
-        //be sure to replace "bhavukm" with your own Docker Hub username
+        be sure to replace "bhavukm" with your own Docker Hub username
         kubeconfig = credentials('kubeconfig')
         DOCKER_IMAGE_NAME = "yoursdhana/train-schedule"
     }
@@ -17,9 +17,9 @@ pipeline {
             }
         }
         stage('Build Docker Image') {
-            //when {
-                //branch 'master'
-            //}
+            when {
+                branch 'master'
+            }
             steps {
                 script {
                     app = docker.build(DOCKER_IMAGE_NAME)
@@ -30,36 +30,35 @@ pipeline {
             }
         }
         stage('Push Docker Image') {
-            //when {
-                //branch 'master'
-            //}
+            when {
+                branch 'master'
+            }
             steps {
                 script {
                     withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
-                        app.push()
+                        app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
                 }
             }
         }
         stage('CanaryDeploy') {
-            //when {
-                //branch 'master'
-            //}
+            when {
+                branch 'master'
+            }
             environment { 
                 CANARY_REPLICAS = 1
             }
             steps {
                 script {
-                   sh ("docker run -d -p 89:8888 -v /var/log/:/var/log/ yoursdhana/train-schedule:latest")
                    sh ("kubectl --kubeconfig $kubeconfig apply -f train-schedule-kube-canary.yml")
                 }
             }
         }
         stage('DeployToProduction') {
-            //when {
-                //branch 'master'
-            //}
+            when {
+                branch 'master'
+            }
             environment { 
                 CANARY_REPLICAS = 0
             }
