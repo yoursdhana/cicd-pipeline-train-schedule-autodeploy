@@ -8,7 +8,7 @@ spec:
     app: train-schedule
   ports:
   - protocol: TCP
-    port: 8888
+    port: 32000
     nodePort: 32100
 
 ---
@@ -35,11 +35,11 @@ spec:
       - name: train-schedule
         image: yoursdhana/train-schedule:latest
         ports:
-        - containerPort: 8888
+        - containerPort: 32000
         livenessProbe:
           httpGet:
             path: /
-            port: 8888
+            port: 32000
           initialDelaySeconds: 15
           timeoutSeconds: 1
           periodSeconds: 10
