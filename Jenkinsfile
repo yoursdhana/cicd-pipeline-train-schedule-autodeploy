@@ -4,7 +4,7 @@ pipeline {
     }    
     agent any
     environment {
-        //be sure to replace "bhavukm" with your own Docker Hub username
+        //be sure to replace "bhavukm" with your own Docker Hub usernamee
         DOCKER_IMAGE_NAME = "yoursdhana/train-schedule"
     }
     stages {
@@ -49,7 +49,7 @@ pipeline {
                 CANARY_REPLICAS = 1
             }
             steps {
-                sh ("kubectl apply -f train-schedule-kube-canary.yml")
+                sh ("kubectl --kubeconfig  /home/centos/.kube/config apply -f train-schedule-kube-canary.yml")
             }
         }
         stage('DeployToProduction') {
