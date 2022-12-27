@@ -64,7 +64,6 @@ pipeline {
             }
             steps {
                 script {
-                   sh ("kubectl --kubeconfig $kubeconfig apply -f train-schedule-kube-canary.yml")
                    input 'Deploy to Production?'
                    milestone(1)
                    sh ("kubectl --kubeconfig $kubeconfig apply -f train-schedule-kube-canary.yml")
