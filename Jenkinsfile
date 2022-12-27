@@ -5,7 +5,6 @@ pipeline {
     agent any
     environment {
         //be sure to replace "bhavukm" with your own Docker Hub username
-        //just cooment
         DOCKER_IMAGE_NAME = "yoursdhana/train-schedule"
     }
     stages {
@@ -30,9 +29,9 @@ pipeline {
             }
         }
         stage('Push Docker Image') {
-            when {
-                branch 'master'
-            }
+            //when {
+                //branch 'master'
+            //}
             steps {
                 script {
                     withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
@@ -43,9 +42,9 @@ pipeline {
             }
         }
         stage('CanaryDeploy') {
-            when {
-                branch 'master'
-            }
+            //when {
+                //branch 'master'
+            //}
             environment { 
                 CANARY_REPLICAS = 1
             }
@@ -54,9 +53,9 @@ pipeline {
             }
         }
         stage('DeployToProduction') {
-            when {
-                branch 'master'
-            }
+            //when {
+                //branch 'master'
+            //}
             environment { 
                 CANARY_REPLICAS = 0
             }
