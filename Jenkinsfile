@@ -44,17 +44,15 @@ pipeline {
         }
         stage('CanaryDeploy') {
             //when {
-                //branch 'master'
+               // branch 'master'
             //}
             environment { 
                 CANARY_REPLICAS = 1
             }
             steps {
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
+                script {
+                   sh ("kubectl --kubeconfig $kubeconfig apply -f train-schedule-kube-canary.yml")
+                }
             }
         }
         stage('DeployToProduction') {
@@ -65,18 +63,12 @@ pipeline {
                 CANARY_REPLICAS = 0
             }
             steps {
-                input 'Deploy to Production?'
-                milestone(1)
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube.yml',
-                    enableConfigSubstitution: true
-                )
+                script {
+                   input 'Deploy to Production?'
+                   milestone(1)
+                   sh ("kubectl --kubeconfig $kubeconfig scale deployment train-schedule-deployment-canary --replicas=0")                    
+                   sh ("kubectl --kubeconfig $kubeconfig apply -f train-schedule-kube.yml")
+                }
             }
         }
     }
