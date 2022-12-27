@@ -49,7 +49,9 @@ pipeline {
                 CANARY_REPLICAS = 1
             }
             steps {
-                sh ("kubectl --kubeconfig  /home/centos/.kube/config apply -f train-schedule-kube-canary.yml")
+                script {
+                   sh ("kubectl --kubeconfig  /home/centos/.kube/config apply -f train-schedule-kube-canary.yml")
+                }
             }
         }
         stage('DeployToProduction') {
@@ -60,11 +62,13 @@ pipeline {
                 CANARY_REPLICAS = 0
             }
             steps {
-                input 'Deploy to Production?'
-                milestone(1)
-                sh ("kubectl apply -f train-schedule-kube-canary.yml")
-                sh ("kubectl apply -f train-schedule-kube.yml")
+                script {
+                   sh ("kubectl --kubeconfig  /home/centos/.kube/config apply -f train-schedule-kube-canary.yml")
+                   input 'Deploy to Production?'
+                   milestone(1)
+                   sh ("kubectl --kubeconfig  /home/centos/.kube/config apply -f train-schedule-kube-canary.yml")
+                   sh ("kubectl --kubeconfig  /home/centos/.kube/config apply -f train-schedule-kube.yml")
+                }
             }
         }
-    }
 }
