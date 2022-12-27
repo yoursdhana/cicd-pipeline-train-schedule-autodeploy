@@ -66,7 +66,7 @@ pipeline {
                 script {
                    input 'Deploy to Production?'
                    milestone(1)
-                   sh ("kubectl --kubeconfig $kubeconfig scale deplyment train-schedule-deployment-canary --replicas=0")                    
+                   sh ("kubectl --kubeconfig $kubeconfig scale deployment train-schedule-deployment-canary --replicas=0")                    
                    sh ("kubectl --kubeconfig $kubeconfig apply -f train-schedule-kube.yml")
                 }
             }
