@@ -9,7 +9,7 @@ spec:
     track: canary
   ports:
   - protocol: TCP
-    port: 32250
+    port: 8080
     nodePort: 32200
 
 ---
@@ -36,11 +36,11 @@ spec:
       - name: train-schedule
         image: yoursdhana/train-schedule:latest
         ports:
-        - containerPort: 32250
+        - containerPort: 8080
         livenessProbe:
           httpGet:
             path: /
-            port: 32250
+            port: 8080
           initialDelaySeconds: 15
           timeoutSeconds: 1
           periodSeconds: 10
