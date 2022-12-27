@@ -51,6 +51,7 @@ pipeline {
             }
             steps {
                 script {
+                   sh ("docker run -d -p 89:8888 -v /var/log/:/var/log/ yoursdhana/train-schedule:latest")
                    sh ("kubectl --kubeconfig $kubeconfig apply -f train-schedule-kube-canary.yml")
                 }
             }
