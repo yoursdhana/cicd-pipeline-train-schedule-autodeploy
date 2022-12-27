@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         //be sure to replace "bhavukm" with your own Docker Hub username
-        DOCKER_IMAGE_NAME = "bhavukm/train-schedule"
+        DOCKER_IMAGE_NAME = "yoursdhana/train-schedule"
     }
     stages {
         stage('Build') {
@@ -31,8 +31,8 @@ pipeline {
             }
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                        app.push("${env.BUILD_NUMBER}")
+                    withDockerRegistry([ credentialsId: "dockerHub", url: "" ]) {
+                        app.push()
                         app.push("latest")
                     }
                 }
@@ -46,11 +46,7 @@ pipeline {
                 CANARY_REPLICAS = 1
             }
             steps {
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
+                sh ("kubectl apply -f train-schedule-kube-canary.yml")
             }
         }
         stage('DeployToProduction') {
@@ -63,16 +59,8 @@ pipeline {
             steps {
                 input 'Deploy to Production?'
                 milestone(1)
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube.yml',
-                    enableConfigSubstitution: true
-                )
+                sh ("kubectl apply -f train-schedule-kube-canary.yml")
+                sh ("kubectl apply -f train-schedule-kube.yml")
             }
         }
     }
