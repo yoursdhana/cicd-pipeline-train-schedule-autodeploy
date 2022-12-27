@@ -1,4 +1,7 @@
 pipeline {
+    tools{
+        jdk 'java8'
+    }    
     agent any
     environment {
         //be sure to replace "bhavukm" with your own Docker Hub username
