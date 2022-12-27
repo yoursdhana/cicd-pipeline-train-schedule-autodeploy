@@ -1,6 +1,6 @@
 pipeline {
     tools{
-        jdk 'java8'
+        jdk 'java11'
     }    
     agent any
     environment {
